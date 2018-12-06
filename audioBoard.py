@@ -119,6 +119,7 @@ def logger():
                 session["username"] = request.form["username"]
                 m = UserTracker.query.filter_by(id=1)
                 m.current = session["username"]
+                db.session.commit()
                 return render_template("loggedInPage.html")
         # if all else fails, offer to log them in
     return render_template("loginPage.html", error=error)
