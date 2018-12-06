@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>{% block title %} - AudioBoard {% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename = 'style.css')}}">
+    <link rel = "stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+
+
+    {% block extra_css %}
+    {% endblock %}
+  </head>
+  <body>
+   <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#"></a>
+      <div class="navbar-nav">
+        <a class="nav-item nav-link" href="{{ url_for('home')}}">Home</a>
+        {% if session.logged_in %}
+         <a class="nav-item nav-link" href = " {{ url_for('predict') }}">Analyze Waveform</a>
+         <a class="nav-item nav-link" href=" {{ url_for('tracker') }}">Track Success</a>
+         <a class="nav-item nav-link" href= " {{ url_for('unlogger') }}">Logout</a>
+
+
+        {% else %}
+          <a class="nav-item nav-link" href= " {{ url_for('registrar') }}">Register</a>
+          <a class="nav-item nav-link" href=" {{ url_for('logger') }}">Login</a>
+
+        {% endif %}
+  </nav>
+        {% block content %}
+
+        {% endblock %}
+    </div>
+
+    <script src="{{ url_for('static', filename='main.js') }}"></script>
+    {% block extra_js %}
+    {% endblock %}
+  </body>
+</html>

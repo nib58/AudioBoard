@@ -1,0 +1,24 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Game Board {{ super() }}{% endblock %}
+
+{% block content %}
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename = 'style.css')}}">
+    <div class="login-box">
+    <img src="{{ url_for('static', filename='avatar.png') }}" class="avatar">
+        <h1>Register</h1>
+            {% if error %}<div class="error"><strong>Error:</strong> {{ error }}</div>{% endif %}
+            <form method = "post" action ="">
+            <p>Username</p>
+            <input type="text" name="username" placeholder="Enter Username" value="{{ request.form.username }}" >
+            <p>Password</p>
+            <input type="password" name="password" placeholder="Enter Password" value="{{ request.form.password }}">
+             <a>Confirm Password</a>
+              <input type="password" name = "password2" placeholder="Confirm Password" value="{{ request.form.password2 }}">
+              <input type="submit" name="submit" value="Sign Up">
+            </form>
+
+        </div>
+
+{% endblock %}

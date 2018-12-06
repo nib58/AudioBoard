@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class = "login-box">
+        {% if error %}<div class="error"><strong>Success:</strong> {{ error }}</div><br>{% endif %}
+        {% if new is none %}
+        <h1>Prediction:</h1>
+       <div class = "error">
+               <p> AudioBoard predicted your #{{current}} Waveform </p>
+               <p>{{prediction}}</p>
+               <p> Is this correct?</p>
+                <form method = "post" action ="">
+                    <br>
+                    YES <input type="radio" name ="success" value="yes"checked="checked">
+                    NO <input type="radio"  name = "success" value="no">
+                    <input type="submit" name="submit" value="submit">
+                </form>
+       </div>
+        {%else%}
+        <h1 class = "error">Click Button Below to fetch new prediction once data has been sent:</h1>
+        <br>
+        <form action="">
+            <input type="submit" value="Get Prediction" />
+        </form>
+        {%endif%}
+    </div>
+
+    <!--We want to continously poll on this page-->
+
+{% endblock %}

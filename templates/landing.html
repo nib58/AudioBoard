@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+{% if session.logged_in %}
+<!--list of previous waveforms-->
+    {% if waveforms is not none %}
+        <div class = "login-box">
+            <h1>Previous Waveforms:</h1>
+            {% for w in waveforms %}
+                <p class = "error">{{w.to_string()}}</p>
+                <br>
+            {% endfor %}
+    {%else%}
+
+    {% endif %}
+{%else%}
+    </div>
+<section class ="intro">
+    <div class = "inner">
+        <div class = "login-box">
+            <h1>Welcome to AudioBoard</h1>
+            <a class = "introbtn" href="{{ url_for('registrar')}}">Get Started</a>
+        </div>
+    </div>
+</section>
+
+{%endif%}
+{% endblock %}
+
