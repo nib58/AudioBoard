@@ -16,8 +16,10 @@ db.init_app(app)
 @app.route("/")
 def home():
     if "username" in session:
+        waveforms=None
         user = User.query.filter_by(username=session['username']).first()
-        waveforms = user.waveforms
+        if user.waveforms:
+            waveforms = user.waveforms
         return render_template("landing.html", user=user, waveforms=waveforms)
     return render_template("landing.html", user=None, waveforms=None)
 
@@ -68,10 +70,14 @@ def predict():  # may not allow for extraneous posts, may have to remove user ch
     if 'username' in session:
         new = None
         prediction = None
+        error = None
+        current = None
         u = User.query.filter_by(username=session['username']).first()
-        current = u.current_waveform_id
+        if u.current_waveform_id:
+            current = u.current_waveform_id
         w = Waveform.query.filter_by(id=u.current_waveform_id).first()
-        prediction = w.prediction
+        if w:
+            prediction = w.prediction
         if request.method == 'POST':
             # update current_wave_for_id
             update = str(request.form['success'])
@@ -82,8 +88,8 @@ def predict():  # may not allow for extraneous posts, may have to remove user ch
                 w.success = False
                 db.session.commit()
             error = "Waveform status updated"
-            return render_template('analyze.html', new='True', error=error), 201
-        return render_template('analyze.html', prediction=prediction, current=current, new=new)
+            return render_template('analyze.html', new='True', error=error,prediction = prediction), 201
+        return render_template('analyze.html', prediction=prediction, current=current, new=new, error = error)
     else:
         return abort(404)
 
@@ -118,15 +124,17 @@ def tracker():
     if "username" in session:
         success = 0.0
         num = 0
+        percent = 0
         u = User.query.filter_by(username=session["username"]).first()
         if u.waveforms is not None:
             for w in u.waveforms:
                 if w.success is True:
                     success += 1.00
                 num += 1.00
-            percent = success/num*100
-            num = num/1
-            return render_template("success_rate.html", percent=percent, num=num)
+            if num != 0:
+                percent = success/num*100
+                num = num/1
+            return render_template("success_rate.html", percent=percent, num=num, waveforms=u.waveforms)
         else:
             return render_template("success_rate.html", percent=None, num=None)
     else:
