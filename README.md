@@ -1,5 +1,11 @@
-//TO SEND POST r = requests.post('http://localhost:5000/send_waveform/', data ={'prediction':'prediction','username':'nigel'})
+TO SEND POST TYPE COMMAND:
 
-//cd to directory and post following commands
+r = requests.post('http://localhost:5000/send_waveform/', data ={'prediction':'prediction'})
 
-//export FLASK_APP='audioBoard.py' flask devinit ; flask run
+TO RUN:
+
+cd to directory and post following commands
+
+export FLASK_APP='audioBoard.py'
+flask devinit
+flask run
