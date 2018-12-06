@@ -2,15 +2,15 @@
 {% block content %}
 {% if session.logged_in %}
 <!--list of previous waveforms-->
-    {% if waveforms is not none %}
         <div class = "login-box">
+            {% if waveforms is not none %}
             <h1>Previous Waveforms:</h1>
             {% for w in waveforms %}
                 <p class = "error">{{w.to_string()}}</p>
                 <br>
             {% endfor %}
     {%else%}
-
+        <h1>AudioBoard has not analyzed any Waveforms yet</h1>
     {% endif %}
 {%else%}
     </div>

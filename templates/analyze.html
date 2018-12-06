@@ -2,7 +2,7 @@
 {% block content %}
     <div class = "login-box">
         {% if error %}<div class="error"><strong>Success:</strong> {{ error }}</div><br>{% endif %}
-        {% if new is none %}
+        {% if new is none and prediction is not none%}
         <h1>Prediction:</h1>
        <div class = "error">
                <p> AudioBoard predicted your #{{current}} Waveform </p>

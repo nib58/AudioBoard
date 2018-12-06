@@ -1,11 +1,14 @@
 {% extends 'base.html' %}
 {% block content %}
-    {% if percent is not none %}
     <div class = "login-box">
+        {% if num != 0 %}
         <h1>Success Rate of Waveforms Tested:</h1>
         <p class = "error">For {{num}} waveforms tested:</p>
         <p class = "error"> {{percent}} % success rate</p>
     </div>
+        {%else%}
+        <h1>AudioBoard has not analyzed any Waveforms yet</h1>
     {% endif %}
+
 {% endblock %}
 
