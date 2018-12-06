@@ -1,5 +1,5 @@
 from flask import Flask, request, session, render_template, abort, redirect, url_for
-from models import db, User, Waveform
+from models import db, User, Waveform, UserTracker
 import datetime
 import os
 import time
@@ -53,7 +53,10 @@ def send_waveform(): #may not allow for extraneous posts, may have to remove use
         #create mostRecent Waveform
         show_all= 'showAll'
         prediction = request.form['prediction']
-        u = User.query.filter_by(username=request.form['username']).first() #get user and store waveform data
+        #use currentTracker
+        t = UserTracker.query.filter_by(id=1).first()
+        u = User.query.filter_by(username=t.current).first() #get user and store waveform data
+        #u = User.query.filter_by(username=request.form['username']).first()
         w = Waveform(user_id=u.id, success=True, prediction=prediction, time=datetime.datetime.now())
         db.session.add(w)
         db.session.commit()
@@ -114,6 +117,8 @@ def logger():
             else:
                 session['logged_in'] = True
                 session["username"] = request.form["username"]
+                m = UserTracker.query.filter_by(id=1)
+                m.current = session["username"]
                 return render_template("loggedInPage.html")
         # if all else fails, offer to log them in
     return render_template("loginPage.html", error=error)
@@ -158,8 +163,10 @@ def init_db():
     """Initializes database and any model objects necessary for assignment"""
     db.drop_all()
     db.create_all()
-
-    print("Initialized Users Database.")
+    current = UserTracker()
+    db.session.add(current)
+    db.session.commit()
+    print("Initialized AudioBoard DB.")
 
 
 @app.cli.command("devinit")
@@ -167,17 +174,19 @@ def init_dev_data():
     """Initializes database with data for development and testing"""
     db.drop_all()
     db.create_all()
-    print("Initialized AudioBoard db.")
+    print("Initialized AudioBoard DB.")
 
 
 
     u1 = User(username="nigel", password="pass")
     u2 = User(username="harry", password="pass")
+    current=UserTracker()
 
     db.session.add(u1)
     print("Created %s" % u1.username)
     db.session.add(u2)
     print("Created %s" % u2.username)
+    db.session.add(current)
 
     db.session.commit()
     print("Added dummy data.")
