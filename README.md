@@ -1,13 +1,10 @@
 TO SEND POST TYPE COMMAND:
 prediction= 'string'
-r = requests.post('http://localhost:5000/send_waveform/', data ={'prediction':prediction})
-r = requests.post('http://10.215.63.19/send_waveform/', data ={'prediction':prediction})
-10.215.63.19
+requests.post('http://localhost:5000/waveforms/', data = {'prediction':prediction})
 
 TO RUN:
 
-cd to directory and post following commands
-
-export FLASK_APP='audioBoard.py'
-flask devinit
-flask run
+1.cd to directory and post following commands
+2. export FLASK_APP='audioBoard.py'
+3. flask devinit
+4. flask run
