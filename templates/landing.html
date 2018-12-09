@@ -2,11 +2,12 @@
 {% block content %}
 {% if session.logged_in %}
 <!--list of previous waveforms-->
-        <div class = "login-box">
+        <div class = "waveform-display">
             {% if waveforms is not none %}
             <h1>Previous Waveforms:</h1>
             {% for w in waveforms %}
-                <p class = "error">{{w.to_string()}}</p>
+            <!--we need a way to reference these waaveforms-->
+                <p class = "error">Your #{{loop.index}} {{w.to_string()}}</p>
                 <br>
             {% endfor %}
     {%else%}
