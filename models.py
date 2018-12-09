@@ -19,9 +19,9 @@ class Waveform(db.Model):
     time = db.Column(db.Date, nullable=False)
 
     def to_string(self):
-        return "Your #%s waveform on %s predicted to be \"%s\": %s" % (str(self.id), str(self.time), self.prediction, self.success)
+        return "waveform on %s predicted to be \"%s\": %s" % (str(self.time), self.prediction, self.success)
 
 
 class UserTracker(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    current = db.Column(db.String(20), nullable=False, unique=True, default="nigel")
+    current = db.Column(db.String(20), nullable=False, default="nigel")

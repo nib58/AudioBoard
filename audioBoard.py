@@ -2,6 +2,7 @@ from flask import Flask, request, session, render_template, abort, redirect, url
 from models import db, User, Waveform, UserTracker
 import datetime
 import os
+import sys
 import time
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(
@@ -45,54 +46,65 @@ def registrar(error=None):
     return render_template('register.html', error=error)
 
 
-@app.route('/send_waveform/', methods=['GET', 'POST'])
+@app.route('/waveforms/', methods=['GET', 'POST'])
 def send_waveform(): #may not allow for extraneous posts, may have to remove user check
     prediction = None
+    username=None
     if request.method == 'POST':
-        #add string to database
-        #create mostRecent Waveform
-        show_all= 'showAll'
         prediction = request.form['prediction']
-        #use currentTracker
         t = UserTracker.query.filter_by(id=1).first()
-        u = User.query.filter_by(username=t.current).first() #get user and store waveform data
-        #u = User.query.filter_by(username=request.form['username']).first()
+        username = t.current
+        u = User.query.filter_by(username=username).first()
         w = Waveform(user_id=u.id, success=True, prediction=prediction, time=datetime.datetime.now())
         db.session.add(w)
         db.session.commit()
         u.current_waveform_id = w.id
         db.session.commit()
-        return render_template('analyze.html', prediction=prediction), 201
-        #might be some timing issues, but we return the username and the waveform id to save in a unique file?
-            #analyze = 'analyze'
+        print(u.current_waveform_id, file=sys.stderr)
+        return render_template('analyze.html', prediction=prediction, username=username), 201
     return render_template('analyze.html', prediction=prediction)
 
 
-@app.route('/predict/', methods=['GET', 'POST'])
+@app.route('/predictions/', methods=['GET', 'POST'])
 def predict():  # may not allow for extraneous posts, may have to remove user check
     if 'username' in session:
         new = None
         prediction = None
         error = None
         current = None
-        u = User.query.filter_by(username=session['username']).first()
-        if u.current_waveform_id:
-            current = u.current_waveform_id
-        w = Waveform.query.filter_by(id=u.current_waveform_id).first()
+        m = UserTracker.query.filter_by(id=1).first()
+        u = User.query.filter_by(username=m.current).first()
+        current = u.current_waveform_id
+        w = Waveform.query.filter_by(id=current).first()
+        index = 0
+        waveforms = u.waveforms
+        for w in waveforms:
+            index += 1
+            if w.id == current:
+                break
         if w:
             prediction = w.prediction
         if request.method == 'POST':
             # update current_wave_for_id
             update = str(request.form['success'])
+            u = User.query.filter_by(username=session['username']).first()  # get user and update waveform data
+            target = u.current_waveform_id
+            w = Waveform.query.filter_by(id=target).first()
+            index = 0
+            waveforms = u.waveforms
+            for w in waveforms:
+                index += 1
+                if w.id == current:
+                    break
             if update == 'no':
-                u = User.query.filter_by(username=session['username']).first()  # get user and update waveform data
-                target = u.current_waveform_id
-                w = Waveform.query.filter_by(id=target).first()
                 w.success = False
                 db.session.commit()
+            else:
+                w.success = True
+                db.session.commit()
             error = "Waveform status updated"
-            return render_template('analyze.html', new='True', error=error,prediction = prediction), 201
-        return render_template('analyze.html', prediction=prediction, current=current, new=new, error = error)
+            return render_template('analyze.html', new='True', error=error, prediction=prediction,index = index), 201
+        return render_template('analyze.html', prediction=prediction, current=current, new=new, error=error, index=index)
     else:
         return abort(404)
 
@@ -117,15 +129,15 @@ def logger():
             else:
                 session['logged_in'] = True
                 session["username"] = request.form["username"]
-                m = UserTracker.query.filter_by(id=1)
-                m.current = session["username"]
+                m = UserTracker.query.filter_by(id=1).first()
+                m.current = request.form["username"]
                 db.session.commit()
                 return render_template("loggedInPage.html")
         # if all else fails, offer to log them in
     return render_template("loginPage.html", error=error)
 
 
-@app.route("/success_plot/")
+@app.route("/successes/")
 def tracker():
     if "username" in session:
         success = 0.0
@@ -181,7 +193,7 @@ def init_dev_data():
 
     u1 = User(username="nigel", password="pass")
     u2 = User(username="harry", password="pass")
-    current=UserTracker()
+    current = UserTracker()
 
     db.session.add(u1)
     print("Created %s" % u1.username)
@@ -200,5 +212,3 @@ app.secret_key = "this is a terrible secret key"
 
 if __name__ == "__main__":
     app.run(threaded=True)
-
-
