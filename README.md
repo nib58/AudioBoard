@@ -4,7 +4,8 @@ requests.post('http://localhost:5000/waveforms/', data = {'prediction':predictio
 
 TO RUN:
 
-1.cd to directory and post following commands
+1. cd to directory and post following commands
+2. install pip (python installer)
 2. export 'FLASK_APP'='audioBoard.py'
 3. flask devinit
 4. flask run
