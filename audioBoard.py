@@ -3,10 +3,9 @@ from models import db, User, Waveform, UserTracker
 import datetime
 import os
 import sys
-import time
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(
-    app.root_path, "users.db"
+    app.root_path, "audioboard.db"
 )
 # Suppress deprecation warning
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -17,7 +16,7 @@ db.init_app(app)
 @app.route("/")
 def home():
     if "username" in session:
-        waveforms=None
+        waveforms = None
         user = User.query.filter_by(username=session['username']).first()
         if user.waveforms:
             waveforms = user.waveforms
