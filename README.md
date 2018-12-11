@@ -1,10 +1,12 @@
-TO SEND POST TYPE COMMAND:
-prediction= 'string'
-requests.post('http://localhost:5000/waveforms/', data = {'prediction':prediction})
+Dependencies: 
+
+pip install Python==3.7
+pip install Flask==1.0.2
+pip install Flask-SQLAlchemy==2.3.2
 
 TO RUN:
-
-1. cd to directory and post following commands
-2. export 'FLASK_APP'='audioBoard.py'
-3. flask devinit
-4. flask run
+1. cd to directory and post following commands:
+2. pip install requirements.txt
+3. export 'FLASK_APP'='audioBoard.py'
+4. flask devinit
+5. flask run
